@@ -22,15 +22,6 @@ Then type the password and press enter.
 
 It also relies on the Powershell modules for XenServer from the XenServer SDK and plink.exe existing in System32.
 #>
-$message = @"
-User: freshegguk
-Password: NbQTGZbIWYfROe
-Api_ID: 3542285
-To: 447803072521,447980973583,447827245150
-Reply: sysadmin@freshegg.com
-Text: UPS has been without power for 5 minutes, automated shutdown is running now.
-"@
-send-mailmessage -from sysadmin@freshegg.com -to sms@messaging.clickatell.com -subject "SMS" -body $message -smtpserver 127.0.0.1
 #Set log path
 $path = "$psscriptroot\$(get-date -format yyyy-MM-dd-HHmm)"
 #Create log directory - output to null to prevent spamming the console
@@ -153,26 +144,3 @@ foreach($addr in $args)
 "$(Get-Date -f "HH:mm:ss") - Shutdown started on all specified pools, awaiting completion" >> $log
 Write-Host "Waiting for all pool masters to be offline..."
 get-job | wait-job
-"$(Get-Date -f "HH:mm:ss") - All specified pool masters offline. Shutting down storage servers" >> $log
-Write-Host "Pool masters offline, shutting down storage servers..."
-#Initiate remote shutdown of SAN servers
-net use \\10.10.10.4\empty Fr3sh3gg69! /USER:administrator
-shutdown /m \\10.10.10.4 /f /s /t 000
-net use \\10.10.10.3\empty Fr3sh3gg69! /USER:administrator
-shutdown /m \\10.10.10.3 /f /s /t 000
-net use \\10.10.10.2\empty Fr3sh3gg69! /USER:administrator
-shutdown /m \\10.10.10.2 /f /s /t 000
-#FE-DEV-ARC
-net use \\172.16.2.196\empty Fr3sh3gg69! /USER:administrator
-shutdown /m \\172.16.2.196 /f /s /t 000
-#FE-STORE1
-shutdown /m \\192.168.100.195 /f /s /t 000
-#SAN5
-echo y | plink root@10.10.10.5 -pw Fr3sh3gg shutdown now
-#SAN6
-echo y | plink root@10.10.10.6 -pw Fr3sh3gg shutdown now
-#NAS2
-echo y | plink root@192.168.100.238 -pw Fr3sh3gg shutdown now
-#NAS3
-echo y | plink root@192.168.100.239 -pw Fr3sh3gg shutdown now
-
